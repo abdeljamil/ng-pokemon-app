@@ -1,0 +1,42 @@
+<div class="row">
+  <div class="col sl2 m6 offset-m3">
+    <div class="card">
+      <div class="input-field">
+        <input
+          #searchBox
+          (keyup)="search(searchBox.value)"
+          placeholder="Rechercher les pokémon"
+        />
+        <div class="collection">
+          <a
+            *ngFor="let pokemon of pokemon$ | async"
+            (click)="goToDetail(pokemon)"
+            class="collection-item"
+          >
+            {{ pokemon.name }}
+          </a>
+          <div class="col sl2 m6 offset-m3">
+            <div class="card">
+              <div class="input-field">
+                <input
+                  #searchBox
+                  (keyup)="search(searchBox.value)"
+                  placeholder="Rechercher un pokémons"
+                />
+                <div class="collection">
+                  <a
+                    *ngFor="let pokemon of pokemon$ | async"
+                    (click)="goToDetail(pokemon)"
+                    class="collection-item"
+                  >
+                    {{ pokemon.name }}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
