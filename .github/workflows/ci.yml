@@ -31,14 +31,14 @@ jobs:
   integration-test:
     runs-on: ubuntu-latest
     needs: [frontend-test]
-    # steps:
-    #   - name: Stop components
-    #     run: |
-    #       if [ -f docker-compose.build.yml ]; then
-    #         docker compose -f docker-compose.build.yml down
-    #       else
-    #         echo "docker-compose.build.yml not found, skipping..."
-    #       fi
+    steps:
+      - name: Stop components
+        run: |
+          if [ -f docker-compose.build.yml ]; then
+            docker compose -f docker-compose.build.yml down
+          else
+            echo "docker-compose.build.yml not found, skipping..."
+          fi
 
   build-image:
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
 
     strategy:
       matrix:
-        component: ["frontend"]
+        component: ["src/app"]
 
     permissions:
       packages: write
