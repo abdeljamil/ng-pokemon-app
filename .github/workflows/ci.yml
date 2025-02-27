@@ -23,7 +23,7 @@ jobs:
         run: npm install
 
       - name: Launch test
-        run: npm test
+        run: npx ng test # Exécute les tests Angular
 
   integration-test:
     runs-on: ubuntu-latest
