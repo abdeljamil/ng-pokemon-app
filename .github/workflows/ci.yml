@@ -14,6 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: List files (for debugging)
+        run: ls -la
+
       - name: Use Node.js 20.x (LTS)
         uses: actions/setup-node@v3
         with:
@@ -22,8 +25,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli
+
       - name: Launch test
-        run: npx ng test # Exécute les tests Angular
+        run: ng test # Exécute les tests Angular
 
   integration-test:
     runs-on: ubuntu-latest
