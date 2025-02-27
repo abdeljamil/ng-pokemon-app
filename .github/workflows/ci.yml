@@ -147,7 +147,7 @@ on:
       - main
 
 jobs:
-  frontend-test:
+  - name: frontend-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
