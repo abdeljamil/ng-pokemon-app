@@ -10,7 +10,7 @@ on:
 
 jobs:
   frontend-test:
-    runs-on: ubuntu-latest
+    runs-on: 18-alpine AS build
     steps:
       - uses: actions/checkout@v3
 
@@ -29,7 +29,7 @@ jobs:
         run: npm install -g @angular/cli
 
   integration-test:
-    runs-on: ubuntu-latest
+    runs-on: 18-alpine AS build
     needs: [frontend-test]
     steps:
       - name: Stop components
@@ -41,7 +41,7 @@ jobs:
           fi
 
   build-image:
-    runs-on: ubuntu-latest
+    runs-on: 18-alpine AS build
     needs: [integration-test]
     if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
