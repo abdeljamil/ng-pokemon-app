@@ -116,7 +116,7 @@ jobs:
 
     strategy:
       matrix:
-        component: ["frontend"]
+        component: ["src/app"]
 
     permissions:
       packages: write
