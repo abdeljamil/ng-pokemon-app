@@ -147,7 +147,7 @@ on:
       - main
 
 jobs:
-  - name: frontend-test
+  frontend-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -172,10 +172,10 @@ jobs:
     steps:
       - name: Stop components
         run: |
-          if [ -f docker-compose.build.yml ]; then
-            docker compose -f docker-compose.build.yml down
+          if [ -f docker-compose.yml ]; then
+            docker compose -f docker-compose.yml down
           else
-            echo "docker-compose.build.yml not found, skipping..."
+            echo "docker-compose.yml not found, skipping..."
           fi
 
   build-image:
