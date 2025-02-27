@@ -1,0 +1,60 @@
+name: Intergration Continue
+
+on:
+  push:
+    branches: -main
+  pull_request:
+    branches: -main
+
+job:
+  frontend-test:
+    run-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /app
+
+  steps:
+    - users: actions/checkout@v3
+
+    - name: Use Node.js 21.6.2
+      uses: actions/setup-node@v3
+      with:
+        node-version: 21.6.2
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: launch test
+      run: test
+
+  Intergration-test:
+    run-on: ubuntu-latest
+    reeds: [frontend]
+    - name: stop components
+    - run: docker compose -f docker-compose.build.yml down
+  build-image:
+    runs-on: ubuntum-latest
+    reeds: [Intergration-test]
+    if: ${{github.event_name == 'push' && github.ref_name == 'main'}} 
+
+    strategy:
+      matrix:
+        component: ["frontend"]
+
+
+    permissions:
+      packages: write
+      contents: read    
+    steps:
+    - uses: actions/checout@v3
+
+    - name: log in to registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+    - name: Build the Docker image
+      uses: docker/build-push-action@v2
+      with: 
+        context: ${{ matrix.component }}
+        file: ${{ matrix.component }}/Dockerfile
+        push: true
+        tags: ghcr.io/${{ github.repository_owner }}/spm-${{ matrix.component }}:${{ github.ref_name }}
