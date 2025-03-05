@@ -2,6 +2,6 @@ execute_python_on_issue_update:
   stage: trigger-script
   image: python:3.9
   script:
-    - python scissue_sync.py "$CI_PROJECT_ID" "$CI_COMMIT_REF_NAME"
+    - python issue_sync.py "$CI_PROJECT_ID" "$CI_COMMIT_REF_NAME"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web"'
