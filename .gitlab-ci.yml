@@ -1,0 +1,11 @@
+stages:
+  - trigger-script
+
+execute_python_on_issue_update:
+  stage: trigger-script
+  image: python:3.9
+  script:
+    - pip install -r requirements.txt  # Installer les dépendances si nécessaire
+    - python issue_sync.py  # Exécuter ton script Python
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
