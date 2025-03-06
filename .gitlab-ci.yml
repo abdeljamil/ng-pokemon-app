@@ -1,0 +1,38 @@
+# execute_python_on_issue_update:
+#   stage: trigger-script
+#   image: python:3.9
+#   script:
+#     - python issue_sync.py "$CI_PROJECT_ID" "$CI_COMMIT_REF_NAME"
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+
+
+
+
+
+
+#  stages:
+#    - trigger-script
+
+#  execute_python_on_issue_update:
+#    stage: trigger-script
+#    image: python:3.9
+#    script:
+#      - pip install -r requirements.txt  # Installer les dépendances si nécessaire
+#      - python issue_sync.py  # Exécuter ton script Python
+#    rules:
+#      - if: '$CI_PIPELINE_SOURCE == "web"'
+
+
+
+stages:
+  - script_issue.py
+
+sync_issues:
+  stage: script_issue.py
+  script:
+    - echo "Début de la synchronisation des issues"
+    - pip install requests  # Installe les dépendances nécessaires
+    - python script_issue.py  # Exécute votre script Python
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "issue" && $CI_COMMIT_REF_NAME == "update"'
