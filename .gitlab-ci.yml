@@ -1,3 +1,6 @@
+stages:
+  - execute-script
+
 execute_python_on_issue_update:
   stage: execute-script
   script:
