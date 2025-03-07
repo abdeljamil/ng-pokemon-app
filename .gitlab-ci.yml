@@ -21,12 +21,25 @@
 #     GITHUB_TOKEN: $GITHUB_TOKEN
 
 
+# stages:
+#   - .pre
+#   - build
+#   - test
+#   - deploy
+#   - .post
+#   - execute-script
+
+# execute_python_on_issue_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+#   variables:
+#     GITHUB_TOKEN: $GITHUB_TOKEN
+
+
 stages:
-  - .pre
-  - build
-  - test
-  - deploy
-  - .post
   - execute-script
 
 execute_python_on_issue_update:
@@ -35,5 +48,3 @@ execute_python_on_issue_update:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web"'
-  variables:
-    GITHUB_TOKEN: $GITHUB_TOKEN
