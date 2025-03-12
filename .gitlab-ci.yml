@@ -39,4 +39,4 @@ execute_python_on_pr_update:
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'  # ou une autre condition selon votre besoin
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'  # ou une autre condition selon votre besoin
