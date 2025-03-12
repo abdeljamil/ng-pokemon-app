@@ -8,9 +8,4 @@
     rules:
       - if: '$CI_PIPELINE_SOURCE == "web"' 
 
-  execute_python_on_pr_update:
-   stage: execute-script
-   script:
-     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-   rules:
-     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+ 
