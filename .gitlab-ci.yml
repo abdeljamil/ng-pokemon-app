@@ -8,16 +8,9 @@ execute_python_on_issue_update:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-# execute_python_on_pr_update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "web"'
 execute_python_on_pr_update:
   stage: execute-script
   script:
-    - echo "Exécution du script PR..."
-    - /usr/bin/python3 /home/gitlab-runner/scripts-secures/script_pr.py
+    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web"'
