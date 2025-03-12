@@ -8,15 +8,7 @@
     rules:
       - if: '$CI_PIPELINE_SOURCE == "web"' 
 
-# include:
-#   - local: 'issue_update.yml'
-#   - local: 'pr_update.yml'
-
-
- stages:
-   - execute-script
-
- execute_python_on_pr_update:
+  execute_python_on_pr_update:
    stage: execute-script
    script:
      - python3 /home/gitlab-runner/scripts-secures/script_pr.py
