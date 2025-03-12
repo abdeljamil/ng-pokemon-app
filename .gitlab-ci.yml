@@ -7,4 +7,3 @@
      - python3 /home/gitlab-runner/scripts-secures/script_issue.py
    rules:
      - if: '$CI_PIPELINE_SOURCE == "web"' 
-
