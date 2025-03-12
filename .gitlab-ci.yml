@@ -1,16 +1,31 @@
-stages:
-  - execute-script
+# stages:
+#   - execute-script
 
-execute_python_on_issue_update:
-  stage: execute-script
-  script:
-    - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
+# execute_python_on_issue_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
     
-execute_python_on_pr_update:
-  stage: execute-script
+# execute_python_on_pr_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+
+
+# .gitlab-ci.yml
+
+stages:
+  - sync
+
+sync_repositories:
+  stage: sync
   script:
+    - echo "Démarrage de la synchronisation des dépôts..."
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+  only:
+    - main  # Remplacez par la branche sur laquelle vous souhaitez exécuter le pipeline
