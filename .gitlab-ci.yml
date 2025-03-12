@@ -1,10 +1,14 @@
-stages:
-  - execute-script
+# stages:
+#   - execute-script
 
-execute_python_on_issue_update:
-  stage: execute-script
-  script:
-    - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"' 
+# execute_python_on_issue_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"' 
+
+include:
+  - local: 'issue_update.yml'
+  - local: 'pr_update.yml'
 
