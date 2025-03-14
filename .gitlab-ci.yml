@@ -1,24 +1,24 @@
-stages:
-  - execute-script
+# stages:
+#   - execute-script
 
-variables:
-  GIT_STRATEGY: clone
+# variables:
+#   GIT_STRATEGY: clone
 
-execute_python_on_issue_update:
-  stage: execute-script
-  script:
-    - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-    # - if: '$CI_PIPELINE_SOURCE == "trigger"'
+# execute_python_on_issue_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
     
-execute_python_on_pr_update:
-  stage: execute-script
-  script:
-    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-    # - if: '$CI_PIPELINE_SOURCE == "trigger"'
+# execute_python_on_pr_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
 # execute_python_on_issue_update:
 #   stage: execute-script
@@ -77,3 +77,32 @@ execute_python_on_pr_update:
 #   rules:
 #     - if: '$CI_PIPELINE_SOURCE == "web" && $TRIGGERED != "true"'
 #     - if: '$CI_PIPELINE_SOURCE == "trigger" && $TRIGGERED != "true"'
+
+
+variables:
+  GIT_STRATEGY: clone  # Clone le dépôt à chaque job
+
+workflow:  # ⚠️ Règle globale pour bloquer les pipelines récursifs
+  rules:
+    - if: '$TRIGGERED == "true"'
+      when: never  # Annule le pipeline si TRIGGERED=true
+    - when: always  # Sinon, exécute le pipeline
+
+stages:
+  - execute-script
+
+execute_python_on_issue_update:
+  stage: execute-script
+  script:
+    - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $TRIGGERED != "true"'
+    - if: '$CI_PIPELINE_SOURCE == "trigger" && $TRIGGERED != "true"'
+
+execute_python_on_pr_update:
+  stage: execute-script
+  script:
+    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $TRIGGERED != "true"'
+    - if: '$CI_PIPELINE_SOURCE == "trigger" && $TRIGGERED != "true"'
