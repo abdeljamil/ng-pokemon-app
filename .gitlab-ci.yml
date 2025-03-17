@@ -24,38 +24,6 @@ stages:          # List of stages for jobs, and their order of execution
 
 
 
-# variables:
-#   GIT_STRATEGY: clone
-
-# # Job pour les événements "issue"
-# execute_python_on_issue_update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "issue" && $CI_COMMIT_REF_NAME == "main"'
-#     - if: '$CI_PIPELINE_SOURCE == "trigger"' 
-
-# # Job pour les événements "merge_request"
-# execute_python_on_pr_update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
-#     - if: '$CI_PIPELINE_SOURCE == "trigger"' 
-
-# # Job de débogage pour vérifier le contexte du pipeline
-# debug_pipeline:
-#   stage: execute-script
-#   script:
-#     - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
-#     - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
-#     - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "trigger"' # S'exécute pour les pipelines déclenchés manuellement ou via un webhook
-
-
 variables:
   GIT_STRATEGY: clone
 
@@ -65,8 +33,8 @@ execute_python_on_issue_update:
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger"'
+    - if: '$CI_PIPELINE_SOURCE == "issue" && $CI_COMMIT_REF_NAME == "main"'
+    - if: '$CI_PIPELINE_SOURCE == "trigger"' 
 
 # Job pour les événements "merge_request"
 execute_python_on_pr_update:
@@ -75,8 +43,40 @@ execute_python_on_pr_update:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger"'
+    - if: '$CI_PIPELINE_SOURCE == "trigger"' 
+
+# Job de débogage pour vérifier le contexte du pipeline
+debug_pipeline:
+  stage: execute-script
+  script:
+    - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
+    - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
+    - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "trigger"' # S'exécute pour les pipelines déclenchés manuellement ou via un webhook
+
+
+# variables:
+#   GIT_STRATEGY: clone
+
+# # Job pour les événements "issue"
+# execute_python_on_issue_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
+
+# # Job pour les événements "merge_request"
+# execute_python_on_pr_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
 
 build-job:       # This job runs in the build stage, which runs first.
