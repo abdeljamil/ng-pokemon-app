@@ -262,28 +262,32 @@
 
 
 
+
+
 stages:
   - execute-script
 
 variables:
   GIT_STRATEGY: clone
 
-
-
+# Job pour exécuter le script lors de la mise à jour d'une issue
 execute_python_on_issue_update:
   stage: execute-script
   script:
-    - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+    - timeout 600 python3 /home/gitlab-runner/scripts-secures/script_issue.py  # Limite à 10 minutes (600 secondes)
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger"'  # Ajouté pour les triggers
-    - if: '$CI_COMMIT_BRANCH == "main"'  # Ajouté pour la branche principale
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_REF_NAME == "main"'  # Exécuter uniquement pour les événements web sur la branche main
+  timeout: 10 minutes  # Limite la durée du job à 10 minutes
+  after_script:
+    - echo "Cleaning up after script_issue.py"  # Nettoyage après exécution
 
+# Job pour exécuter le script lors de la mise à jour d'une pull request
 execute_python_on_pr_update:
   stage: execute-script
   script:
-    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+    - timeout 600 python3 /home/gitlab-runner/scripts-secures/script_pr.py  # Limite à 10 minutes (600 secondes)
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger"'  # Ajouté pour les triggers
-    - if: '$CI_COMMIT_BRANCH == "main"'  # Ajouté pour la branche principale
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_MERGE_REQUEST_ID'  # Exécuter uniquement pour les événements web liés aux merge requests
+  timeout: 10 minutes  # Limite la durée du job à 10 minutes
+  after_script:
+    - echo "Cleaning up after script_pr.py"  # Nettoyage après exécution
