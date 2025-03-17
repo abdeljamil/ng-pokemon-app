@@ -12,13 +12,13 @@ execute_python_on_issue_update:
     - if: '$CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_PIPELINE_SOURCE == "trigger"'
     
-# execute_python_on_pr_update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "web"'
-#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
+execute_python_on_pr_update:
+  stage: execute-script
+  script:
+    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
 # execute_python_on_issue_update:
 #   stage: execute-script
