@@ -56,27 +56,27 @@ stages:          # List of stages for jobs, and their order of execution
 #     - if: '$CI_PIPELINE_SOURCE == "trigger"' # S'exécute pour les pipelines déclenchés manuellement ou via un webhook
 
 
-variables:
-  GIT_STRATEGY: clone
+# variables:
+#   GIT_STRATEGY: clone
 
-# Job pour les événements "issue"
-execute_python_on_issue_update:
-  stage: execute-script
-  script:
-    - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-    # - if: '$CI_PIPELINE_SOURCE == "trigger"'
+# # Job pour les événements "issue"
+# execute_python_on_issue_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+#     # - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
-# Job pour les événements "merge_request"
-execute_python_on_pr_update:
-  stage: execute-script
-  script:
-    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-    # - if: '$CI_PIPELINE_SOURCE == "trigger"'
+# # Job pour les événements "merge_request"
+# execute_python_on_pr_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+#     # - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
 
 build-job:       # This job runs in the build stage, which runs first.
@@ -84,8 +84,7 @@ build-job:       # This job runs in the build stage, which runs first.
   script:
     - echo "Compiling the code..."
     - echo "Compile complete."
-    - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+
 
 unit-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
