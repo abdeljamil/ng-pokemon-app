@@ -268,10 +268,7 @@ stages:
 variables:
   GIT_STRATEGY: clone
 
-debug_job:
-  stage: execute-script
-  script:
-    - echo "Pipeline Source: $CI_PIPELINE_SOURCE"
+
 
 execute_python_on_issue_update:
   stage: execute-script
