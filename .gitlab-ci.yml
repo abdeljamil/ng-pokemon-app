@@ -35,7 +35,7 @@ execute-python-on-issue_update:
   rules:
     # - if: '$CI_PIPELINE_SOURCE == "issue" && $CI_COMMIT_REF_NAME == "main"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger"' 
+    # - if: '$CI_PIPELINE_SOURCE == "trigger"' 
 
 # Job pour les événements "merge_request"
 execute-python-on-pr-update:
@@ -45,7 +45,7 @@ execute-python-on-pr-update:
   rules:
     # - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger"' 
+    # - if: '$CI_PIPELINE_SOURCE == "trigger"' 
 
 # Job de débogage pour vérifier le contexte du pipeline
 debug_pipeline:
