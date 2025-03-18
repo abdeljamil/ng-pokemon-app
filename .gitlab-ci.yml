@@ -93,8 +93,11 @@
 #   rules:
 #     - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
+stages:
+  - build  # Ajout d'un stage existant pour éviter l'erreur
+
 execute-python-script:
-  stage: execute-script
+  stage: build  # Utiliser un stage valide
   before_script:
     - rm -rf .git
     - git init
@@ -107,3 +110,4 @@ execute-python-script:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "trigger"'
       when: manual  # Exécuter uniquement manuellement
+
