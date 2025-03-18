@@ -28,7 +28,7 @@ variables:
   GIT_STRATEGY: clone
 
 # Job pour les événements "issue"
-execute-python-on-issue_update:
+execute-python-on-issue-update:
   stage: execute-script
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
