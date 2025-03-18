@@ -52,11 +52,4 @@ execute-python-on-pr-update:
     - if: '$CI_PIPELINE_SOURCE == "web"'
     - when: always  # Permet d'éviter un pipeline vide
 
-# Job de debug pour afficher les variables CI/CD
-debug-pipeline:
-  stage: execute-script
-  script:
-    - echo "CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE"
-    - echo "CI_COMMIT_REF_NAME: $CI_COMMIT_REF_NAME"
-  rules:
-    - when: always
+
