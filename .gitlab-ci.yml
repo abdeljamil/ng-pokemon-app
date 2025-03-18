@@ -55,7 +55,6 @@
 
 
 
-
 stages:          
   - execute-script
 
@@ -64,7 +63,7 @@ variables:
 
 workflow:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web" || ($CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null && $CI_COMMIT_REF_NAME != "ci-trigger")'
+    - if: '$CI_PIPELINE_SOURCE == "web" || ($CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null)'
 
 # Job pour les événements "issue"
 execute-python-on-issue-update:
@@ -72,13 +71,8 @@ execute-python-on-issue-update:
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null && $CI_COMMIT_REF_NAME != "ci-trigger"'
-  only:
-    - main
-    - develop
-  except:
-    - schedules
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_REF_NAME =~ /^(main|develop)$/'
+    - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null && $CI_COMMIT_REF_NAME =~ /^(main|develop)$/'
 
 # Job pour les événements "merge_request"
 execute-python-on-pr-update:
@@ -86,10 +80,5 @@ execute-python-on-pr-update:
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null && $CI_COMMIT_REF_NAME != "ci-trigger"'
-  only:
-    - main
-    - develop
-  except:
-    - schedules
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_REF_NAME =~ /^(main|develop)$/'
+    - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null && $CI_COMMIT_REF_NAME =~ /^(main|develop)$/'
