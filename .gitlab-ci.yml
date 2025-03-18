@@ -85,8 +85,6 @@
 
 
 
-
-
 stages:
   - execute-script
 
@@ -121,6 +119,21 @@ execute-python-on-pr-update:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request" || $CI_PIPELINE_SOURCE == "web"'
 
+# Job de débogage pour vérifier le contexte du pipeline
+debug_pipeline:
+  stage: execute-script
+  script:
+    - echo "Listing all environment variables..."
+    - printenv
+    - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
+    - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
+    - if [ -n "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" ]; then
+        echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME";
+      else
+        echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME is not defined.";
+      fi
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
 # Default job to prevent empty pipelines
 default-job:
@@ -129,12 +142,6 @@ default-job:
     - echo "No specific job matched the pipeline source. Running default job."
   rules:
     - if: '$CI_PIPELINE_SOURCE != "issue" && $CI_PIPELINE_SOURCE != "merge_request" && $CI_PIPELINE_SOURCE != "trigger"'
-
-
-
-
-
-
 
 
 
