@@ -25,79 +25,10 @@
 
 
 
-# stages:          
-#   - execute-script
-
-# variables:
-#   GIT_STRATEGY: clone
-
-# workflow:
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "web" || ($CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null && $CI_PIPELINE_SOURCE != "pipeline" && $CI_COMMIT_MESSAGE !~ /Trigger pipeline/)'
-
-# # Job pour les événements "issue"
-# execute-python-on-issue-update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "web"'
-#     - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null && $CI_PIPELINE_SOURCE != "pipeline" && $CI_COMMIT_MESSAGE !~ /Trigger pipeline/'
-
-# # Job pour les événements "merge_request"
-# execute-python-on-pr-update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "web"'
-#     - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null && $CI_PIPELINE_SOURCE != "pipeline" && $CI_COMMIT_MESSAGE !~ /Trigger pipeline/'
-
-
-# stages:          
-#   - execute-script
-
-# variables:
-#   GIT_STRATEGY: clone
-
-# workflow:
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "web" || ($CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null)'
-
-# # Job pour les événements "issue"
-# execute-python-on-issue-update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
- 
-
-# # Job pour les événements "merge_request"
-# execute-python-on-pr-update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "web" || ($CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null)'
-
-
-
-
-# stages:          
-#   - execute-script
-
-# execute-python-script:
-#   stage: execute-script
-#   script:
-#     - if [[ -f "/home/gitlab-runner/scripts-secures/script_issue.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_issue.py; fi
-#     - if [[ -f "/home/gitlab-runner/scripts-secures/script_pr.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_pr.py; fi
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
-
-stages:
-  - build  # Ajout d'un stage existant pour éviter l'erreur
 
 execute-python-script:
-  stage: build  # Utiliser un stage valide
+  stage: build
+  resource_group: unique_execution  # Empêche l'exécution multiple en parallèle
   before_script:
     - rm -rf .git
     - git init
@@ -109,5 +40,4 @@ execute-python-script:
     - if [[ -f "/home/gitlab-runner/scripts-secures/script_pr.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_pr.py; fi
   rules:
     - if: '$CI_PIPELINE_SOURCE == "trigger"'
-      when: manual  # Exécuter uniquement manuellement
-
+      when: manual
