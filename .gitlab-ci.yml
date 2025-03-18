@@ -93,13 +93,6 @@
 #   rules:
 #     - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
-
-stages:
-  - execute-script
-
-variables:
-  GIT_DEPTH: 0  # Clone l'intégralité du dépôt
-
 execute-python-script:
   stage: execute-script
   before_script:
@@ -113,4 +106,4 @@ execute-python-script:
     - if [[ -f "/home/gitlab-runner/scripts-secures/script_pr.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_pr.py; fi
   rules:
     - if: '$CI_PIPELINE_SOURCE == "trigger"'
-
+      when: manual  # Exécuter uniquement manuellement
