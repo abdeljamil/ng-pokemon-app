@@ -1,43 +1,43 @@
-# stages:          
-#   - execute-script
+stages:          
+  - execute-script
 
 
-# variables:
-#   GIT_STRATEGY: clone
+variables:
+  GIT_STRATEGY: clone
 
-# # Job pour les événements "issue"
-# execute-python-on-issue-update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "web"'
+# Job pour les événements "issue"
+execute-python-on-issue-update:
+  stage: execute-script
+  script:
+    - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
  
 
-# # Job pour les événements "merge_request"
-# execute-python-on-pr-update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "web"'
-
-
-
-
-
-execute-python-script:
-  stage: build
-  resource_group: unique_execution  # Empêche l'exécution multiple en parallèle
-  before_script:
-    - rm -rf .git
-    - git init
-    - git remote add origin "$CI_REPOSITORY_URL"
-    - git fetch --all
-    - git reset --hard origin/$CI_COMMIT_REF_NAME
+# Job pour les événements "merge_request"
+execute-python-on-pr-update:
+  stage: execute-script
   script:
-    - if [[ -f "/home/gitlab-runner/scripts-secures/script_issue.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_issue.py; fi
-    - if [[ -f "/home/gitlab-runner/scripts-secures/script_pr.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_pr.py; fi
+    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "trigger"'
-      when: manual
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+
+
+
+
+# execute-python-script:
+#   stage: build
+#   resource_group: unique_execution  # Empêche l'exécution multiple en parallèle
+#   before_script:
+#     - rm -rf .git
+#     - git init
+#     - git remote add origin "$CI_REPOSITORY_URL"
+#     - git fetch --all
+#     - git reset --hard origin/$CI_COMMIT_REF_NAME
+#   script:
+#     - if [[ -f "/home/gitlab-runner/scripts-secures/script_issue.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_issue.py; fi
+#     - if [[ -f "/home/gitlab-runner/scripts-secures/script_pr.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_pr.py; fi
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
+#       when: manual
