@@ -1,6 +1,93 @@
-stages:          
-  - execute-script
+# # This file is a template, and might need editing before it works on your project.
+# # This is a sample GitLab CI/CD configuration file that should run without any modifications.
+# # It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
+# # it uses echo commands to simulate the pipeline execution.
+# #
+# # A pipeline is composed of independent jobs that run scripts, grouped into stages.
+# # Stages run in sequential order, but jobs within stages run in parallel.
+# #
+# # For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
+# #
+# # You can copy and paste this template into a new `.gitlab-ci.yml` file.
+# # You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+# #
+# # To contribute improvements to CI/CD templates, please follow the Development guide at:
+# # https://docs.gitlab.com/ee/development/cicd/templates.html
+# # This specific template is located at:
+# # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
+# stages:          # List of stages for jobs, and their order of execution
+#   - execute-script
+#   - build
+#   - test
+#   - deploy
+
+# variables:
+#   GIT_STRATEGY: clone
+
+# # Job pour les événements "issue"
+# execute-python-on-issue-update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     # - if: '$CI_PIPELINE_SOURCE == "issue" && $CI_COMMIT_REF_NAME == "main"'
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"' 
+
+# # Job pour les événements "merge_request"
+# execute-python-on-pr-update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"' 
+
+# # Job de débogage pour vérifier le contexte du pipeline
+# debug_pipeline:
+#   stage: execute-script
+#   script:
+#     - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
+#     - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
+#     - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"' # S'exécute pour les pipelines déclenchés manuellement ou via un webhook
+
+
+# build-job:       # This job runs in the build stage, which runs first.
+#   stage: build
+#   script:
+#     - echo "Compiling the code..."
+#     - echo "Compile complete."
+
+# unit-test-job:   # This job runs in the test stage.
+#   stage: test    # It only starts when the job in the build stage completes successfully.
+#   script:
+#     - echo "Running unit tests... This will take about 60 seconds."
+#     - sleep 60
+#     - echo "Code coverage is 90%"
+
+# lint-test-job:   # This job also runs in the test stage.
+#   stage: test    # It can run at the same time as unit-test-job (in parallel).
+#   script:
+#     - echo "Linting code... This will take about 10 seconds."
+#     - sleep 10
+#     - echo "No lint issues found."
+
+# deploy-job:      # This job runs in the deploy stage.
+#   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+#   environment: production
+#   script:
+#     - echo "Deploying application..."
+#     - echo "Application successfully deployed."
+
+
+
+
+
+stages:
+  - execute-script
 
 variables:
   GIT_STRATEGY: clone
@@ -11,8 +98,7 @@ execute-python-on-issue-update:
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
- 
+    - if: '$CI_PIPELINE_SOURCE == "issue"'  # Exécution uniquement pour les événements "issue"
 
 # Job pour les événements "merge_request"
 execute-python-on-pr-update:
@@ -20,24 +106,146 @@ execute-python-on-pr-update:
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request"'  # Exécution uniquement pour les événements "merge_request"
 
 
 
 
 
-# execute-python-script:
+
+
+
+
+
+# stages:
+#   - build
+#   - test
+#   - deploy
+#   - execute-script
+
+# variables:
+#   GIT_STRATEGY: clone
+
+# # Jobs pour le pipeline de base (build, test, deploy)
+# build-job:
 #   stage: build
-#   resource_group: unique_execution  # Empêche l'exécution multiple en parallèle
-#   before_script:
-#     - rm -rf .git
-#     - git init
-#     - git remote add origin "$CI_REPOSITORY_URL"
-#     - git fetch --all
-#     - git reset --hard origin/$CI_COMMIT_REF_NAME
 #   script:
-#     - if [[ -f "/home/gitlab-runner/scripts-secures/script_issue.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_issue.py; fi
-#     - if [[ -f "/home/gitlab-runner/scripts-secures/script_pr.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_pr.py; fi
+#     - echo "Compiling the code..."
+#     - echo "Compile complete."
+
+# unit-test-job:
+#   stage: test
+#   script:
+#     - echo "Running unit tests... This will take about 60 seconds."
+#     - sleep 60
+#     - echo "Code coverage is 90%"
+
+# lint-test-job:
+#   stage: test
+#   script:
+#     - echo "Linting code... This will take about 10 seconds."
+#     - sleep 10
+#     - echo "No lint issues found."
+
+# deploy-job:
+#   stage: deploy
+#   environment: production
+#   script:
+#     - echo "Deploying application..."
+#     - echo "Application successfully deployed."
+
+# # Jobs pour les événements webhooks (issues et merge requests)
+# execute_python_on_issue_update:
+#   stage: execute-script
+#   script:
+#     - timeout 600 python3 /home/gitlab-runner/scripts-secures/script_issue.py  # Limite à 10 minutes (600 secondes)
 #   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "issue" && $CI_COMMIT_REF_NAME == "main"'
+#   timeout: 10 minutes
+#   after_script:
+#     - echo "Cleaning up after script_issue.py"
+
+# execute_python_on_pr_update:
+#   stage: execute-script
+#   script:
+#     - timeout 600 python3 /home/gitlab-runner/scripts-secures/script_pr.py  # Limite à 10 minutes (600 secondes)
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+#   timeout: 10 minutes
+#   after_script:
+#     - echo "Cleaning up after script_pr.py"
+
+# # Job de débogage pour vérifier le contexte du pipeline
+# debug_pipeline:
+#   stage: execute-script
+#   script:
+#     - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
+#     - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
+#     - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'  # S'exécute pour les pipelines déclenchés manuellement ou via un webhook
+
+
+
+
+
+
+# stages:
+#   - execute-script
+
+# variables:
+#   GIT_STRATEGY: clone
+
+# # Job pour les événements "issue"
+# execute_python_on_issue_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "issue" && $CI_COMMIT_REF_NAME == "main"'
+
+# # Job pour les événements "merge_request"
+# execute_python_on_pr_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+
+# # Job de débogage pour vérifier le contexte du pipeline
+# debug_pipeline:
+#   stage: execute-script
+#   script:
+#     - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
+#     - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
+#     - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"' # S'exécute pour les pipelines déclenchés manuellement ou via un webhook
+
+
+
+
+# stages:
+#   - execute-script
+
+# variables:
+#   GIT_STRATEGY: clone
+
+# # Job pour les événements "issue"
+# execute_python_on_issue_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
 #     - if: '$CI_PIPELINE_SOURCE == "trigger"'
-#       when: manual
+
+# # Job pour les événements "merge_request"
+# execute_python_on_pr_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
