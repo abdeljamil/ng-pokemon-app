@@ -212,15 +212,15 @@ execute_python_on_pr_update:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
 
-# Job de débogage pour vérifier le contexte du pipeline
-debug_pipeline:
-  stage: execute-script
-  script:
-    - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
-    - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
-    - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "trigger"' # S'exécute pour les pipelines déclenchés manuellement ou via un webhook
+# # Job de débogage pour vérifier le contexte du pipeline
+# debug_pipeline:
+#   stage: execute-script
+#   script:
+#     - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
+#     - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
+#     - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"' # S'exécute pour les pipelines déclenchés manuellement ou via un webhook
 
 
 
