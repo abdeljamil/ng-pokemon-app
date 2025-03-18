@@ -190,27 +190,27 @@
 
 
 
-stages:
-  - execute-script
+# stages:
+#   - execute-script
 
-variables:
-  GIT_STRATEGY: clone
+# variables:
+#   GIT_STRATEGY: clone
 
-# Job pour les événements "issue"
-execute_python_on_issue_update:
-  stage: execute-script
-  script:
-    - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "issue" && $CI_COMMIT_REF_NAME == "main"'
+# # Job pour les événements "issue"
+# execute_python_on_issue_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "issue" && $CI_COMMIT_REF_NAME == "main"'
 
-# Job pour les événements "merge_request"
-execute_python_on_pr_update:
-  stage: execute-script
-  script:
-    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+# # Job pour les événements "merge_request"
+# execute_python_on_pr_update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
 
 # # Job de débogage pour vérifier le contexte du pipeline
 # debug_pipeline:
@@ -225,27 +225,27 @@ execute_python_on_pr_update:
 
 
 
-# stages:
-#   - execute-script
+stages:
+  - execute-script
 
-# variables:
-#   GIT_STRATEGY: clone
+variables:
+  GIT_STRATEGY: clone
 
-# # Job pour les événements "issue"
-# execute_python_on_issue_update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "web"'
-#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
+# Job pour les événements "issue"
+execute_python_on_issue_update:
+  stage: execute-script
+  script:
+    - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
-# # Job pour les événements "merge_request"
-# execute_python_on_pr_update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
-#     - if: '$CI_PIPELINE_SOURCE == "web"'
-#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
+# Job pour les événements "merge_request"
+execute_python_on_pr_update:
+  stage: execute-script
+  script:
+    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'
