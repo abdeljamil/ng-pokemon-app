@@ -96,7 +96,9 @@ execute-python-on-issue-update:
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "trigger"'
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'
+      changes:
+        - scripts-secures/script_issue.py  # Exécute seulement si ce fichier change
 
 # Job pour les événements "merge_request"
 execute-python-on-pr-update:
@@ -104,4 +106,7 @@ execute-python-on-pr-update:
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "trigger"'
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'
+      changes:
+        - scripts-secures/script_pr.py  # Exécute seulement si ce fichier change
+
