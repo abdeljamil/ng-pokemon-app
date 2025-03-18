@@ -53,8 +53,6 @@
 #     - if: '$CI_PIPELINE_SOURCE == "web"'
 #     - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null && $CI_PIPELINE_SOURCE != "pipeline" && $CI_COMMIT_MESSAGE !~ /Trigger pipeline/'
 
-
-
 stages:          
   - execute-script
 
@@ -71,8 +69,7 @@ execute-python-on-issue-update:
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_REF_NAME =~ /^(main|develop)$/'
-    - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null && $CI_COMMIT_REF_NAME =~ /^(main|develop)$/'
+    - if: '$CI_PIPELINE_SOURCE == "web" || ($CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null)'
 
 # Job pour les événements "merge_request"
 execute-python-on-pr-update:
@@ -80,5 +77,4 @@ execute-python-on-pr-update:
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_REF_NAME =~ /^(main|develop)$/'
-    - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null && $CI_COMMIT_REF_NAME =~ /^(main|develop)$/'
+    - if: '$CI_PIPELINE_SOURCE == "web" || ($CI_PIPELINE_SOURCE == "trigger" && $CI_PARENT_PIPELINE_ID == null)'
