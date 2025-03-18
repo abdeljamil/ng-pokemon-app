@@ -82,6 +82,8 @@
 
 
 
+stages:          
+  - execute-script
 
 execute-python-script:
   stage: execute-script
