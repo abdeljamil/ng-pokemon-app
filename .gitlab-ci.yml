@@ -59,7 +59,6 @@ build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
     - echo "Compiling the code..."
     - echo "Compile complete."
 
