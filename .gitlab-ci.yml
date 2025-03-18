@@ -83,30 +83,10 @@
 
 
 
-
-stages:          
-  - execute-script
-
-variables:
-  GIT_STRATEGY: clone
-
-# Job pour les événements "issue"
-execute-python-on-issue-update:
+execute-python-script:
   stage: execute-script
   script:
-    - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+    - if [[ -f "/home/gitlab-runner/scripts-secures/script_issue.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_issue.py; fi
+    - if [[ -f "/home/gitlab-runner/scripts-secures/script_pr.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_pr.py; fi
   rules:
     - if: '$CI_PIPELINE_SOURCE == "trigger"'
-      changes:
-        - scripts-secures/script_issue.py  # Exécute seulement si ce fichier change
-
-# Job pour les événements "merge_request"
-execute-python-on-pr-update:
-  stage: execute-script
-  script:
-    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "trigger"'
-      changes:
-        - scripts-secures/script_pr.py  # Exécute seulement si ce fichier change
-
