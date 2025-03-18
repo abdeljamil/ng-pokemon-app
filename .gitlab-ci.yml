@@ -39,9 +39,6 @@ debug_pipeline:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "trigger"' # S'exécute pour les pipelines déclenchés manuellement ou via un webhook
 
-
-
-
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
