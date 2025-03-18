@@ -97,7 +97,7 @@ variables:
 execute-python-on-issue-update:
   stage: execute-script
   script:
-    - echo "CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE"
+    - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
     - echo "Checking if script_issue.py exists..."
     - ls -l /home/gitlab-runner/scripts-secures/script_issue.py
     - echo "Checking Python version..."
@@ -111,7 +111,7 @@ execute-python-on-issue-update:
 execute-python-on-pr-update:
   stage: execute-script
   script:
-    - echo "CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE"
+    - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
     - echo "Checking if script_pr.py exists..."
     - ls -l /home/gitlab-runner/scripts-secures/script_pr.py
     - echo "Checking Python version..."
@@ -125,9 +125,9 @@ execute-python-on-pr-update:
 debug_pipeline:
   stage: execute-script
   script:
-  - echo "CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE"
-  - echo "CI_COMMIT_REF_NAME: $CI_COMMIT_REF_NAME"
-  - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+  - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
+  - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
+  - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
