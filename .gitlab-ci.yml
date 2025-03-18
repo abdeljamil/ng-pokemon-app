@@ -82,11 +82,26 @@
 
 
 
-stages:          
-  - execute-script
+# stages:          
+#   - execute-script
+
+# execute-python-script:
+#   stage: execute-script
+#   script:
+#     - if [[ -f "/home/gitlab-runner/scripts-secures/script_issue.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_issue.py; fi
+#     - if [[ -f "/home/gitlab-runner/scripts-secures/script_pr.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_pr.py; fi
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
+
 
 execute-python-script:
   stage: execute-script
+  before_script:
+    - rm -rf .git
+    - git init
+    - git remote add origin "$CI_REPOSITORY_URL"
+    - git fetch --all
+    - git reset --hard origin/$CI_COMMIT_REF_NAME
   script:
     - if [[ -f "/home/gitlab-runner/scripts-secures/script_issue.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_issue.py; fi
     - if [[ -f "/home/gitlab-runner/scripts-secures/script_pr.py" ]]; then python3 /home/gitlab-runner/scripts-secures/script_pr.py; fi
