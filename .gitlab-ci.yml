@@ -246,13 +246,19 @@
 #     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
 #   rules:
 #     - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "trigger"'
-
-
 stages:
   - execute-script
 
 variables:
   GIT_STRATEGY: clone
+
+# Job de debug pour vérifier les variables d'environnement
+debug-job:
+  stage: execute-script
+  script:
+    - env | sort
+  rules:
+    - when: always
 
 # Job pour synchroniser les issues
 execute-python-on-issue-update:
@@ -260,8 +266,10 @@ execute-python-on-issue-update:
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web" && $EVENT_TYPE == "issue"'
+    - if: '$CI_PIPELINE_SOURCE == "web" && "$EVENT_TYPE" == "issue"'
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: never  # Empêche l'exécution si EVENT_TYPE est absent
 
 # Job pour synchroniser les PRs
 execute-python-on-pr-update:
@@ -269,8 +277,10 @@ execute-python-on-pr-update:
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web" && $EVENT_TYPE == "merge_request"'
+    - if: '$CI_PIPELINE_SOURCE == "web" && "$EVENT_TYPE" == "merge_request"'
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: never  # Empêche l'exécution si EVENT_TYPE est absent
 
 
 
