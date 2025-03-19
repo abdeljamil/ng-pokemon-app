@@ -173,7 +173,7 @@ execute-python-on-pr-update:
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'  # S'exécute pour les événements de merge request
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'  # S'exécute pour les événements de merge request
 
 # Job de débogage pour vérifier le contexte du pipeline
 debug_pipeline:
