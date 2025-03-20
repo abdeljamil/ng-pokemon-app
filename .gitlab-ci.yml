@@ -92,79 +92,7 @@
 
 
 
-# stages:          # List of stages for jobs, and their order of execution
-#   - execute-script
-#   - build
-#   - test
-#   - deploy
-
-# variables:
-#   GIT_STRATEGY: clone
-
-# # Job pour les événements "issue"
-# execute-python-on-issue-update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-#   rules:
-#     # - if: '$CI_PIPELINE_SOURCE == "issue" && $CI_COMMIT_REF_NAME == "main"'
-#     - if: '$CI_PIPELINE_SOURCE == "web"'
-#     - if: '$CI_PIPELINE_SOURCE == "trigger"' 
-
-# # Job pour les événements "merge_request"
-# execute-python-on-pr-update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "web"'
-#     - if: '$CI_PIPELINE_SOURCE == "trigger"' 
-
-# # Job de débogage pour vérifier le contexte du pipeline
-# debug_pipeline:
-#   stage: execute-script
-#   script:
-#     - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
-#     - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
-#     - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "trigger"' # S'exécute pour les pipelines déclenchés manuellement ou via un webhook
-
-
-# build-job:       # This job runs in the build stage, which runs first.
-#   stage: build
-#   script:
-#     - echo "Compiling the code..."
-#     - echo "Compile complete."
-
-# unit-test-job:   # This job runs in the test stage.
-#   stage: test    # It only starts when the job in the build stage completes successfully.
-#   script:
-#     - echo "Running unit tests... This will take about 60 seconds."
-#     - sleep 60
-#     - echo "Code coverage is 90%"
-
-# lint-test-job:   # This job also runs in the test stage.
-#   stage: test    # It can run at the same time as unit-test-job (in parallel).
-#   script:
-#     - echo "Linting code... This will take about 10 seconds."
-#     - sleep 10
-#     - echo "No lint issues found."
-
-# deploy-job:      # This job runs in the deploy stage.
-#   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-#   environment: production
-#   script:
-#     - echo "Deploying application..."
-#     - echo "Application successfully deployed."
-
-
-
-
-
-
-
-stages:
+stages:          # List of stages for jobs, and their order of execution
   - execute-script
   - build
   - test
@@ -173,62 +101,132 @@ stages:
 variables:
   GIT_STRATEGY: clone
 
-# Job pour les événements "issue" (création/modification)
+# Job pour les événements "issue"
 execute-python-on-issue-update:
   stage: execute-script
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "issue"'  # 🔥 Seulement pour les issues
+    # - if: '$CI_PIPELINE_SOURCE == "issue" && $CI_COMMIT_REF_NAME == "main"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "trigger"' 
 
-# Job pour les événements "merge request" (création/modification)
+# Job pour les événements "merge_request"
 execute-python-on-pr-update:
   stage: execute-script
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'  # 🔥 Seulement pour les MRs
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "trigger"' 
 
-# Job de débogage amélioré
+# Job de débogage pour vérifier le contexte du pipeline
 debug_pipeline:
   stage: execute-script
   script:
-    - echo "=== DEBUG ==="
-  echo "CI_PIPELINE_SOURCE: 
-     - $CI_PIPELINE_SOURCE"
-  echo "CI_COMMIT_REF_NAME: 
-     - $CI_COMMIT_REF_NAME"
-    - env | grep CI_  # Affiche toutes les variables CI
+    - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
+    - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
+    - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
   rules:
-    - if: $CI_PIPELINE_SOURCE  # S'exécute pour TOUS les événements
+    - if: '$CI_PIPELINE_SOURCE == "trigger"' # S'exécute pour les pipelines déclenchés manuellement ou via un webhook
 
-# Jobs suivants inchangés
-build-job:
+
+build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
     - echo "Compiling the code..."
     - echo "Compile complete."
 
-unit-test-job:
-  stage: test
+unit-test-job:   # This job runs in the test stage.
+  stage: test    # It only starts when the job in the build stage completes successfully.
   script:
-    - echo "Running unit tests..."
+    - echo "Running unit tests... This will take about 60 seconds."
     - sleep 60
     - echo "Code coverage is 90%"
 
-lint-test-job:
-  stage: test
+lint-test-job:   # This job also runs in the test stage.
+  stage: test    # It can run at the same time as unit-test-job (in parallel).
   script:
-    - echo "Linting code..."
+    - echo "Linting code... This will take about 10 seconds."
     - sleep 10
     - echo "No lint issues found."
 
-deploy-job:
-  stage: deploy
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
+
+
+
+
+
+
+
+# stages:
+#   - execute-script
+#   - build
+#   - test
+#   - deploy
+
+# variables:
+#   GIT_STRATEGY: clone
+
+# # Job pour les événements "issue" (création/modification)
+# execute-python-on-issue-update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "issue"'  # 🔥 Seulement pour les issues
+
+# # Job pour les événements "merge request" (création/modification)
+# execute-python-on-pr-update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'  # 🔥 Seulement pour les MRs
+
+# # Job de débogage amélioré
+# debug_pipeline:
+#   stage: execute-script
+#   script:
+#     - echo "=== DEBUG ==="
+#     - echo "CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE"
+#     - echo "CI_COMMIT_REF_NAME: $CI_COMMIT_REF_NAME"
+#     - env | grep CI_  # Affiche toutes les variables CI
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE  # S'exécute pour TOUS les événements
+
+# # Jobs suivants inchangés
+# build-job:
+#   stage: build
+#   script:
+#     - echo "Compiling the code..."
+#     - echo "Compile complete."
+
+# unit-test-job:
+#   stage: test
+#   script:
+#     - echo "Running unit tests..."
+#     - sleep 60
+#     - echo "Code coverage is 90%"
+
+# lint-test-job:
+#   stage: test
+#   script:
+#     - echo "Linting code..."
+#     - sleep 10
+#     - echo "No lint issues found."
+
+# deploy-job:
+#   stage: deploy
+#   environment: production
+#   script:
+#     - echo "Deploying application..."
+#     - echo "Application successfully deployed."
 
 
 
