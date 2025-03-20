@@ -50,7 +50,6 @@
 #   rules:
 #     - if: '$CI_PIPELINE_SOURCE == "merge_request"'
 
-
 workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "issue"'
