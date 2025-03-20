@@ -208,7 +208,7 @@ build-job:
   stage: build
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-    - echo "python3 /home/gitlab-runner/scripts-secures/script_pr.py"
+    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
     - echo "Compiling the code..."
     - echo "Compile complete."
   interruptible: true
