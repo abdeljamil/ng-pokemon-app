@@ -28,34 +28,24 @@
 
 
 
-# stages:  
-#   - execute-script
+stages:  
+  - execute-script
 
-# variables:
-#   GIT_STRATEGY: clone
+variables:
+  GIT_STRATEGY: clone
 
-# # Job pour les événements "issue"
-# execute-python-on-issue-update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "issue"'
-
-# # Job pour les événements "merge_request"
-# execute-python-on-pr-update:
-#   stage: execute-script
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "merge_request"'
-
-
-
-
-test-trigger:
+# Job pour les événements "issue"
+execute-python-on-issue-update:
   stage: execute-script
   script:
-    - echo "Pipeline déclenché avec succès !"
+    - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "trigger"'
+    - if: '$CI_PIPELINE_SOURCE == "issue"'
+
+# Job pour les événements "merge_request"
+execute-python-on-pr-update:
+  stage: execute-script
+  script:
+    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request"'
