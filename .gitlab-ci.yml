@@ -207,12 +207,13 @@ variables:
 build-job:
   stage: build
   script:
-    - "curl -X POST --fail -F token=glptt-141610cb03f79aef1ea168ac91c8b67024ef6bfe -F ref=main https://192.168.0.244/api/v4/projects/128/trigger/pipeline"  
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+  interruptible: true
+  
+  script:
     - echo "Compiling the code..."
     - echo "Compile complete."
-  interruptible: true
 
 unit-test-job:
   stage: test
