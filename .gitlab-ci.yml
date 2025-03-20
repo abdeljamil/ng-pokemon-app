@@ -210,10 +210,7 @@ build-job:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   interruptible: true
-  
-  script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
+
 
 unit-test-job:
   stage: test
