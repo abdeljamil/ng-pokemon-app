@@ -190,17 +190,6 @@ execute-python-on-pr-update:
     - if: '$CI_PIPELINE_SOURCE == "trigger"'
   interruptible: true  # Permet l'annulation de ce job
 
-# Job de débogage pour vérifier le contexte du pipeline
-debug_pipeline:
-  stage: execute-script
-  script:
-    - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
-    - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
-    - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "trigger"'
-  interruptible: true  # Permet l'annulation de ce job
-
 build-job:
   stage: build
   script:
