@@ -159,20 +159,58 @@
 #     - echo "Application successfully deployed."
 
 
-
-variables:
-  GIT_DEPTH: 50  # Increase the depth
-
 stages:
+  # - execute-script
   - build
   - test
   - deploy
+
+variables:
+  GIT_STRATEGY: clone
+
+# workflow:
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "issue"'
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "main"'
+#     - when: never  # Ignore tous les autres déclencheurs
+
+# # Job pour les événements "issue"
+# execute-python-on-issue-update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "issue"'
+#   interruptible: true
+
+# # Job pour les événements "merge_request"
+# execute-python-on-pr-update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#   interruptible: true
+
+# # Job de débogage pour vérifier le contexte du pipeline
+# debug_pipeline:
+#   stage: execute-script
+#   script:
+#     - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
+#     - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
+#     - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
+#   interruptible: true
 
 build-job:
   stage: build
   script:
     - echo "python3 /home/gitlab-runner/scripts-secures/script_issue.py"
     - echo "python3 /home/gitlab-runner/scripts-secures/script_pr.py"
+    - echo "Compiling the code..."
+    - echo "Compile complete."
   interruptible: true
 
 unit-test-job:
@@ -198,6 +236,7 @@ deploy-job:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
   interruptible: false  # Ne pas annuler ce job (important pour la production)
+
 
 
 
