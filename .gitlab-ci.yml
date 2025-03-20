@@ -64,7 +64,7 @@ execute-python-on-issue-update:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
     - if: '$CI_PIPELINE_SOURCE == "issue"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger"'  # Ajout pour les pipelines déclenchés
+    - if: '$CI_PIPELINE_SOURCE == "trigger" && $RUN_ISSUE_SCRIPT == "true"'  # Ajout pour les pipelines déclenchés avec une variable personnalisée
 
 # Job pour les événements "merge_request"
 execute-python-on-pr-update:
@@ -73,4 +73,4 @@ execute-python-on-pr-update:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger"'  # Ajout pour les pipelines déclenchés
+    - if: '$CI_PIPELINE_SOURCE == "trigger" && $RUN_PR_SCRIPT == "true"'  # Ajout pour les pipelines déclenchés avec une variable personnalisée
