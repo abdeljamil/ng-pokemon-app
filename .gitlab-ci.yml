@@ -161,9 +161,9 @@
 
 stages:
   - execute-script
-  - build
-  - test
-  - deploy
+  # - build
+  # - test
+  # - deploy
 
 variables:
   GIT_STRATEGY: clone
