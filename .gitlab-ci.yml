@@ -35,12 +35,18 @@ variables:
   GIT_STRATEGY: clone
 
 # Job pour les événements "issue"
+# execute-python-on-issue-update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "issue"'
 execute-python-on-issue-update:
   stage: execute-script
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "issue"'
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
 # Job pour les événements "merge_request"
 execute-python-on-pr-update:
