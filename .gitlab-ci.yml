@@ -35,7 +35,7 @@ variables:
 debug-variables:
   stage: execute-script
   script:
-    - echo "CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE"
+    - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
   rules:
     - when: always
 
