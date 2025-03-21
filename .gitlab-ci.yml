@@ -43,14 +43,14 @@ execute-python-on-issue-update:
     - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
 
-# Job pour les événements "merge_request"
-execute-python-on-pr-update:
-  stage: execute-script
-  script:
-    - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger"' 
+# # Job pour les événements "merge_request"
+# execute-python-on-pr-update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"' 
  
 
 
