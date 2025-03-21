@@ -27,14 +27,21 @@
  
 
 
-
 stages:  
   - execute-script
 
 variables:
   GIT_STRATEGY: clone
 
-# Job pour les événements "issue"
+# Debug job to print variables
+debug-variables:
+  stage: execute-script
+  script:
+    - echo "CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE"
+  rules:
+    - when: always
+
+# Job for "issue" events
 execute-python-on-issue-update:
   stage: execute-script
   script:
@@ -42,10 +49,18 @@ execute-python-on-issue-update:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "issue"'
 
-# Job pour les événements "merge_request"
+# Job for "merge_request" events
 execute-python-on-pr-update:
   stage: execute-script
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request"'
+
+# Fallback job to prevent empty pipeline
+fallback-job:
+  stage: execute-script
+  script:
+    - echo "No specific job matched the pipeline source."
+  rules:
+    - when: always
