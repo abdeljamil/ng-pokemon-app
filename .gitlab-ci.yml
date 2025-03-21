@@ -25,7 +25,6 @@
 #     - if: '$CI_PIPELINE_SOURCE == "web"'
 #     - if: '$CI_PIPELINE_SOURCE == "trigger"' 
  
-
 stages:  
   - execute-script
 
@@ -36,25 +35,25 @@ variables:
 debug-variables:
   stage: execute-script
   script:
-    - echo "CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE"
+    - echo "CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE"
   rules:
     - when: always
 
-# Job for "issue" events
+# Job pour les événements "issue" ou "trigger"
 execute-python-on-issue-update:
   stage: execute-script
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "issue"'
+    - if: '$CI_PIPELINE_SOURCE == "issue" || $CI_PIPELINE_SOURCE == "trigger"'
 
-# Job for "merge_request" events
+# Job pour les événements "merge_request" ou "trigger"
 execute-python-on-pr-update:
   stage: execute-script
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request" || $CI_PIPELINE_SOURCE == "trigger"'
 
 # Fallback job to prevent empty pipeline
 fallback-job:
