@@ -1,6 +1,34 @@
+# stages:  
+#   - execute-script
+
+
+# variables:
+#   GIT_STRATEGY: clone
+
+# # Job pour les événements "issue"
+# execute-python-on-issue-update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     # - if: '$CI_PIPELINE_SOURCE == "issue" && $CI_COMMIT_REF_NAME == "main"'
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
+
+# # Job pour les événements "merge_request"
+# execute-python-on-pr-update:
+#   stage: execute-script
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"' 
+
+
+
+
 stages:  
   - execute-script
-
 
 variables:
   GIT_STRATEGY: clone
@@ -8,6 +36,7 @@ variables:
 # Job pour les événements "issue"
 execute-python-on-issue-update:
   stage: execute-script
+  interruptible: true  # Ajout de l'option interruptible
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
@@ -18,11 +47,16 @@ execute-python-on-issue-update:
 # Job pour les événements "merge_request"
 execute-python-on-pr-update:
   stage: execute-script
+  interruptible: true  # Ajout de l'option interruptible
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger"' 
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'
+
+
+
+
 
 
 # stages:
