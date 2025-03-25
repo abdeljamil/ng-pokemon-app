@@ -152,7 +152,7 @@ variables:
 
 # Job pour la synchronisation des issues
 execute-python-on-issue-update:
-  stage: execute-script
+  stage: execute-script 
   interruptible: true
   before_script:
     - echo "Vérification de l'accès à GitHub..."
