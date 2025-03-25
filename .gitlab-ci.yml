@@ -1,4 +1,4 @@
-# stages:  
+# stages:
 #   - execute-script
 
 
@@ -22,12 +22,12 @@
 #     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
 #   rules:
 #     - if: '$CI_PIPELINE_SOURCE == "web"'
-#     - if: '$CI_PIPELINE_SOURCE == "trigger"' 
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
 
 
 
-# stages:  
+# stages:
 #   - execute-script
 
 # variables:
@@ -53,6 +53,60 @@
 #   rules:
 #     - if: '$CI_PIPELINE_SOURCE == "web"'
 #     - if: '$CI_PIPELINE_SOURCE == "trigger"'
+
+
+# stages:
+#   - execute-script
+
+# variables:
+#   GIT_STRATEGY: clone
+#   AUTO_CANCEL: true
+
+# # Job pour les push sur main (issues et modifications directes)
+# execute-python-on-main:
+#   stage: execute-script
+#   interruptible: true
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "main"'
+#     - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_REF_NAME == "main"'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_COMMIT_REF_NAME == "main"'
+#   after_script:
+#     - |
+#       if [[ "$CI_PIPELINE_SOURCE" =~ ^(web|trigger|push)$ ]]; then
+#         PIPELINE_IDS=$(curl -s --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/pipelines?status=success&ref=$CI_COMMIT_REF_NAME" | jq '.[].id')
+#         for id in $PIPELINE_IDS; do
+#           if [ "$id" -lt "$CI_PIPELINE_ID" ]; then
+#             curl --request DELETE --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/pipelines/$id"
+#           fi
+#         done
+#       fi
+
+# # Job pour les merge requests et autres branches
+# execute-python-on-branches:
+#   stage: execute-script
+#   interruptible: true
+#   script:
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME != "main"'
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request"'
+#     - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_REF_NAME != "main"'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_COMMIT_REF_NAME != "main"'
+#   after_script:
+#     - |
+#       if [[ "$CI_PIPELINE_SOURCE" =~ ^(web|trigger|push|merge_request)$ ]]; then
+#         PIPELINE_IDS=$(curl -s --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/pipelines?status=success&ref=$CI_COMMIT_REF_NAME" | jq '.[].id')
+#         for id in $PIPELINE_IDS; do
+#           if [ "$id" -lt "$CI_PIPELINE_ID" ]; then
+#             curl --request DELETE --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/pipelines/$id"
+#           fi
+#         done
+#       fi
+
+
+
 
 
 stages:
@@ -60,77 +114,26 @@ stages:
 
 variables:
   GIT_STRATEGY: clone
-  AUTO_CANCEL: true
 
-# Job pour les push sur main (issues et modifications directes)
-execute-python-on-main:
+# Job pour les événements liés aux tickets (issue)
+execute-python-on-issue-update:
   stage: execute-script
-  interruptible: true
+  interruptible: true  # Ajout de l'option interruptible
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "main"'
-    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_REF_NAME == "main"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_COMMIT_REF_NAME == "main"'
-  after_script:
-    - |
-      if [[ "$CI_PIPELINE_SOURCE" =~ ^(web|trigger|push)$ ]]; then
-        PIPELINE_IDS=$(curl -s --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/pipelines?status=success&ref=$CI_COMMIT_REF_NAME" | jq '.[].id')
-        for id in $PIPELINE_IDS; do
-          if [ "$id" -lt "$CI_PIPELINE_ID" ]; then
-            curl --request DELETE --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/pipelines/$id"
-          fi
-        done
-      fi
+    # Déclencheurs pour les événements liés aux tickets
+    - if: '$CI_PIPELINE_SOURCE == "web" && ($CI_MERGE_REQUEST_ACTION == "open" || $CI_MERGE_REQUEST_ACTION == "update" || $CI_MERGE_REQUEST_ACTION == "close" || $CI_MERGE_REQUEST_ACTION == "reopen")'
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
-# Job pour les merge requests et autres branches
-execute-python-on-branches:
+# Job pour les événements poussés et les requêtes de fusion
+execute-python-on-pr-update:
   stage: execute-script
-  interruptible: true
+  interruptible: true  # Ajout de l'option interruptible
   script:
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME != "main"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request"'
-    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_REF_NAME != "main"'
-    - if: '$CI_PIPELINE_SOURCE == "trigger" && $CI_COMMIT_REF_NAME != "main"'
-  after_script:
-    - |
-      if [[ "$CI_PIPELINE_SOURCE" =~ ^(web|trigger|push|merge_request)$ ]]; then
-        PIPELINE_IDS=$(curl -s --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/pipelines?status=success&ref=$CI_COMMIT_REF_NAME" | jq '.[].id')
-        for id in $PIPELINE_IDS; do
-          if [ "$id" -lt "$CI_PIPELINE_ID" ]; then
-            curl --request DELETE --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/pipelines/$id"
-          fi
-        done
-      fi
-
-
-# stages:  
-#   - execute-script
-
-# variables:
-#   GIT_STRATEGY: clone
-
-# # Job pour les événements liés aux tickets (issue)
-# execute-python-on-issue-update:
-#   stage: execute-script
-#   interruptible: true  # Ajout de l'option interruptible
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
-#   rules:
-#     # Déclencheurs pour les événements liés aux tickets
-#     - if: '$CI_PIPELINE_SOURCE == "web" && ($CI_MERGE_REQUEST_ACTION == "open" || $CI_MERGE_REQUEST_ACTION == "update" || $CI_MERGE_REQUEST_ACTION == "close" || $CI_MERGE_REQUEST_ACTION == "reopen")'
-#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
-
-# # Job pour les événements poussés et les requêtes de fusion
-# execute-python-on-pr-update:
-#   stage: execute-script
-#   interruptible: true  # Ajout de l'option interruptible
-#   script:
-#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
-#   rules:
-#     # Déclencheurs pour les événements poussés et les requêtes de fusion
-#     - if: '$CI_PIPELINE_SOURCE == "push"'
-#     - if: '$CI_PIPELINE_SOURCE == "web" && ($CI_MERGE_REQUEST_ACTION == "open" || $CI_MERGE_REQUEST_ACTION == "update" || $CI_MERGE_REQUEST_ACTION == "merge")'
-#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
+    # Déclencheurs pour les événements poussés et les requêtes de fusion
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "web" && ($CI_MERGE_REQUEST_ACTION == "open" || $CI_MERGE_REQUEST_ACTION == "update" || $CI_MERGE_REQUEST_ACTION == "merge")'
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'
