@@ -62,7 +62,7 @@ variables:
   GIT_STRATEGY: clone
   AUTO_CANCEL: true
 
-Job pour les push sur main (issues et modifications directes)
+# Job pour les push sur main (issues et modifications directes)
 execute-python-on-main:
   stage: execute-script
   interruptible: true
@@ -83,7 +83,7 @@ execute-python-on-main:
         done
       fi
 
-Job pour les merge requests et autres branches
+# Job pour les merge requests et autres branches
 execute-python-on-branches:
   stage: execute-script
   interruptible: true
