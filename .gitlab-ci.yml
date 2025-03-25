@@ -123,7 +123,8 @@ execute-python-on-issue-update:
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
     # Déclencheurs pour les événements liés aux tickets
-    - if: '$CI_PIPELINE_SOURCE == "web" && ($CI_MERGE_REQUEST_ACTION == "open" || $CI_MERGE_REQUEST_ACTION == "update" || $CI_MERGE_REQUEST_ACTION == "close" || $CI_MERGE_REQUEST_ACTION == "reopen")'
+    #- if: '$CI_PIPELINE_SOURCE == "web" && ($CI_MERGE_REQUEST_ACTION == "open" || $CI_MERGE_REQUEST_ACTION == "update" || $CI_MERGE_REQUEST_ACTION == "close" || $CI_MERGE_REQUEST_ACTION == "reopen")'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
 # Job pour les événements poussés et les requêtes de fusion
