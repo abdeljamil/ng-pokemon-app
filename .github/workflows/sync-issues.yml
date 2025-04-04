@@ -107,7 +107,7 @@ jobs:
       - name: Verify environment
         run: |
           echo "Vérification des variables d'environnement..."
-          echo "GITHUB_REPOSITORY: ${{ github.repository }}"
+          echo "HUB_REPO: ${{ github.repository }}"
           echo "Script path: $(pwd)/script_sync/issue_sync.py"
           ls -la script_sync/
 
@@ -117,7 +117,6 @@ jobs:
           python -c "import requests, urllib3, re, datetime, os; print('Import des modules réussi')"
           python issue_sync.py
         env:
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_TOKEN: ${{ github.token }}
+          HUB_REPO: ${{ github.repository }}
+          HUB_TOKEN: ${{ github.token }}
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-
