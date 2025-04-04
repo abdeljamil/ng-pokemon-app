@@ -72,13 +72,13 @@
 
 
 
-
 name: Sync Issues
 
 on:
   issues:
     types: [opened, edited, closed, reopened]
-  workflow_dispatch:
+  repository_dispatch:
+    types: [gitlab_trigger]
 
 jobs:
   sync-issues:
@@ -86,25 +86,38 @@ jobs:
     permissions:
       issues: write
       contents: read
-      
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
       - name: Install dependencies
         run: |
-          pip install PyGithub python-dotenv
+          python -m pip install --upgrade pip
+          pip install requests urllib3 python-dotenv PyGithub
+          echo "Toutes les dépendances sont installées"
 
-      - name: Run sync script
+      - name: Verify environment
+        run: |
+          echo "Vérification des variables d'environnement..."
+          echo "GITHUB_REPOSITORY: ${{ github.repository }}"
+          echo "Script path: $(pwd)/script_sync/issue_sync.py"
+          ls -la script_sync/
+
+      - name: Execute sync script
         run: |
           cd script_sync
+          python -c "import requests, urllib3, re, datetime, os; print('Import des modules réussi')"
           python issue_sync.py
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_TOKEN: ${{ github.token }}
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+
