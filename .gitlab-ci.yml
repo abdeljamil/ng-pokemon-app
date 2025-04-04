@@ -141,33 +141,82 @@
 
 
 
+
+
+
+
+
+# stages:
+#   - execute-script
+
+# variables:
+#   GIT_STRATEGY: clone
+#   GITHUB_API_URL: "https://api.github.com"
+#   # Assurez-vous d'avoir créé cette variable dans Settings > CI/CD > Variables
+#   # Nom: GITHUB_TOKEN, Valeur: votre_token_github, Protégée: Oui, Masquée: Oui
+
+# # Job pour la synchronisation des issues
+# execute-python-on-issue-update:
+#   stage: execute-script 
+#   interruptible: true
+#   before_script:
+#     - echo "Vérification de l'accès à GitHub..."
+#     - apt-get update && apt-get install -y jq  # Installation de jq si nécessaire
+#     - python3 -m pip install requests --upgrade  # Mise à jour de requests
+#   script:
+#     - export GITHUB_TOKEN="$GITHUB_TOKEN"  # Transmet le token au script
+#     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web" && ($CI_MERGE_REQUEST_ACTION == "open" || $CI_MERGE_REQUEST_ACTION == "update" || $CI_MERGE_REQUEST_ACTION == "close" || $CI_MERGE_REQUEST_ACTION == "reopen")'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
+#   after_script:
+#     - echo "Nettoyage après exécution..."
+
+# # Job pour les merge requests et push
+# execute-python-on-pr-update:
+#   stage: execute-script
+#   interruptible: true
+#   before_script:
+#     - echo "Préparation de l'environnement..."
+#     - apt-get update && apt-get install -y jq
+#   script:
+#     - export GITHUB_TOKEN="$GITHUB_TOKEN"
+#     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME != "main"'
+#     - if: '$CI_PIPELINE_SOURCE == "web" && ($CI_MERGE_REQUEST_ACTION == "open" || $CI_MERGE_REQUEST_ACTION == "update" || $CI_MERGE_REQUEST_ACTION == "merge")'
+#     - if: '$CI_PIPELINE_SOURCE == "trigger"'
+
+
+
+
+
 stages:
   - execute-script
 
 variables:
   GIT_STRATEGY: clone
   GITHUB_API_URL: "https://api.github.com"
-  # Assurez-vous d'avoir créé cette variable dans Settings > CI/CD > Variables
-  # Nom: GITHUB_TOKEN, Valeur: votre_token_github, Protégée: Oui, Masquée: Oui
 
-# Job pour la synchronisation des issues
+# Job pour la synchronisation des issues (UNIQUEMENT pour les événements d'issues)
 execute-python-on-issue-update:
-  stage: execute-script 
+  stage: execute-script
   interruptible: true
   before_script:
     - echo "Vérification de l'accès à GitHub..."
-    - apt-get update && apt-get install -y jq  # Installation de jq si nécessaire
-    - python3 -m pip install requests --upgrade  # Mise à jour de requests
+    - apt-get update && apt-get install -y jq
+    - python3 -m pip install requests --upgrade
   script:
-    - export GITHUB_TOKEN="$GITHUB_TOKEN"  # Transmet le token au script
+    - export GITHUB_TOKEN="$GITHUB_TOKEN"
     - python3 /home/gitlab-runner/scripts-secures/script_issue.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web" && ($CI_MERGE_REQUEST_ACTION == "open" || $CI_MERGE_REQUEST_ACTION == "update" || $CI_MERGE_REQUEST_ACTION == "close" || $CI_MERGE_REQUEST_ACTION == "reopen")'
-    - if: '$CI_PIPELINE_SOURCE == "trigger"'
-  after_script:
-    - echo "Nettoyage après exécution..."
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_MERGE_REQUEST_ACTION =~ /^(open|update|close|reopen)$/'
+      when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "trigger" && $TRIGGER_PAYLOAD == "issue_event"'
+      when: on_success
+    - when: never  # Tous les autres cas
 
-# Job pour les merge requests et push
+# Job pour les merge requests et push (UNIQUEMENT pour les événements de branches)
 execute-python-on-pr-update:
   stage: execute-script
   interruptible: true
@@ -178,6 +227,17 @@ execute-python-on-pr-update:
     - export GITHUB_TOKEN="$GITHUB_TOKEN"
     - python3 /home/gitlab-runner/scripts-secures/script_pr.py
   rules:
+    # Pour les push sur branches (sauf main)
     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME != "main"'
-    - if: '$CI_PIPELINE_SOURCE == "web" && ($CI_MERGE_REQUEST_ACTION == "open" || $CI_MERGE_REQUEST_ACTION == "update" || $CI_MERGE_REQUEST_ACTION == "merge")'
-    - if: '$CI_PIPELINE_SOURCE == "trigger"'
+      when: on_success
+    
+    # Pour les actions spécifiques de MR
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_MERGE_REQUEST_ACTION =~ /^(open|update|merge)$/'
+      when: on_success
+    
+    # Pour les triggers manuels spécifiques
+    - if: '$CI_PIPELINE_SOURCE == "trigger" && $TRIGGER_PAYLOAD == "pr_event"'
+      when: on_success
+    
+    # Dans tous les autres cas, ne pas exécuter
+    - when: never
