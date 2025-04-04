@@ -35,38 +35,76 @@
 
 
 
+# name: Sync Issues
+
+# on:
+#   issues:
+#     types: [opened, edited, closed, reopened]
+#   repository_dispatch:
+#     types: [gitlab_trigger]
+
+# jobs:
+#   sync-issues:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0  # Important pour avoir l'historique complet
+
+#       - name: Set up Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: '3.x'
+
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install python-dotenv requests
+
+#       - name: Execute sync script
+#         run: |
+#           cd script_sync  # Se déplacer dans le dossier
+#           python3 issue_sync.py  # Exécuter avec le chemin relatif
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.HUB_TOKEN }}
+#           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+
+
+
+
 name: Sync Issues
 
 on:
   issues:
     types: [opened, edited, closed, reopened]
-  repository_dispatch:
-    types: [gitlab_trigger]
+  workflow_dispatch:
 
 jobs:
   sync-issues:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+      
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Important pour avoir l'historique complet
+          fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install python-dotenv requests
+          pip install PyGithub python-dotenv
 
-      - name: Execute sync script
+      - name: Run sync script
         run: |
-          cd script_sync  # Se déplacer dans le dossier
-          python3 issue_sync.py  # Exécuter avec le chemin relatif
+          cd script_sync
+          python issue_sync.py
         env:
-          GITHUB_TOKEN: ${{ secrets.HUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ github.token }}
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-
