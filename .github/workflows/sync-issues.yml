@@ -6,45 +6,24 @@ on:
   repository_dispatch:
     types: [gitlab_trigger]
 
-
-
-
-
 jobs:
-  execute-python-on-issue-update:
+  sync-issues:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Download script_issue.py
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Execute sync script
         run: |
-          curl -o ./script_issue.py http://192.168.0.244/scripts/script_issue.py
-
-      - name: Execute Python script for issues
-        run: python3 ./script_issue.py
-        if: github.event_name == 'issues' || github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch'
-
-
-
-# jobs:
-#   sync-issues:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-
-#       - name: Set up Python
-#         uses: actions/setup-python@v4
-#         with:
-#           python-version: '3.x'
-
-#       - name: Execute sync script
-#         run: |
-#           python3  /home/gitlab-runner/scripts-secures/script_issue.py
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          python3  /home/gitlab-runner/scripts-secures/script_issue.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.HUB_TOKEN }}
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
 
 
