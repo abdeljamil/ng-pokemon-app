@@ -9,6 +9,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # # Configuration
 HUB_TOKEN = os.getenv("HUB_TOKEN")
 HUB_REPO = os.getenv("HUB_REPO")
+GITLAB_TOKEN = os.getenv("GITLAB_TOKEN")
 GITLAB_PROJECT_ID = os.getenv("GITLAB_PROJECT_ID")
 GITLAB_URL = os.getenv("GITLAB_URL")
 
