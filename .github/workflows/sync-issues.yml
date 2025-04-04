@@ -20,7 +20,7 @@ jobs:
 
       - name: Execute sync script
         run: |
-          python3  /home/gitlab-runner/scripts-secures/script_issue.py
+          python3  /script_sync/issue_sync.py
         env:
           GITHUB_TOKEN: ${{ secrets.HUB_TOKEN }}
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
